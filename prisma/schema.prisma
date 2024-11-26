@@ -1,0 +1,38 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model User {
+  id            String    @id @default(cuid())
+  name          String?
+  email         String    @unique
+  password      String
+  emailVerified DateTime?
+  image         String?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  profile       Profile?
+}
+
+model Profile {
+  id          String    @id @default(cuid())
+  userId      String    @unique
+  name        String?
+  profession  String?
+  company     String?
+  bio         String?
+  email       String?
+  phone       String?
+  website     String?
+  avatar      String?
+  socialLinks Json?     // Stored as an array of {platform, url}
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  attachments Json?     // Stored as an array of {name, url, type}
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+}
